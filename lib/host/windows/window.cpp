@@ -3,6 +3,7 @@
 
    Distributed under the MIT License (https://opensource.org/licenses/MIT)
 =============================================================================*/
+#include "host_types.hpp"
 #include <elements/window.hpp>
 #include <elements/support.hpp>
 
@@ -30,6 +31,11 @@ namespace cycfi { namespace elements
       {
          auto param = GetWindowLongPtrW(hwnd, GWLP_USERDATA);
          return reinterpret_cast<window_info*>(param);
+      }
+
+      window_info* get_window_info(host_window window)
+      {
+         return get_window_info(as_handle(window));
       }
 
       void disable_close(HWND hwnd)
@@ -163,27 +169,29 @@ namespace cycfi { namespace elements
       std::wstring wname = utf8_decode(name);
       auto scale = GetDpiForSystem() / 96.0;
 
-      _window = CreateWindowW(
-         L"ElementsWindow",
-         wname.c_str(),
-         WS_OVERLAPPEDWINDOW,
-         bounds.left * scale, bounds.top * scale,
-         bounds.width() * scale, bounds.height() * scale,
-         nullptr, nullptr, nullptr,
-         nullptr
+      _window = as_host_window(
+         CreateWindowW(
+            L"ElementsWindow",
+            wname.c_str(),
+            WS_OVERLAPPEDWINDOW,
+            bounds.left * scale, bounds.top * scale,
+            bounds.width() * scale, bounds.height() * scale,
+            nullptr, nullptr, nullptr,
+            nullptr
+         )
       );
 
       window_info* info = new window_info{ this };
-      SetWindowLongPtrW(_window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(info));
+      SetWindowLongPtrW(as_handle(_window), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(info));
 
       if (!(style_ & closable))
-         disable_close(_window);
+         disable_close(as_handle(_window));
       if (!(style_ & miniaturizable))
-         disable_minimize(_window);
+         disable_minimize(as_handle(_window));
       if (!(style_ & resizable))
-         disable_resize(_window);
+         disable_resize(as_handle(_window));
 
-      ShowWindow(_window, SW_RESTORE);
+      ShowWindow(as_handle(_window), SW_RESTORE);
    }
 
    window::~window()
@@ -194,9 +202,9 @@ namespace cycfi { namespace elements
 
    point window::size() const
    {
-      auto scale = GetDpiForWindow(_window) / 96.0;
+      auto scale = GetDpiForWindow(as_handle(_window)) / 96.0;
       RECT frame;
-      GetWindowRect(_window, &frame);
+      GetWindowRect(as_handle(_window), &frame);
       return {
          float((frame.right - frame.left) / scale),
          float((frame.bottom - frame.top) / scale)
@@ -205,16 +213,16 @@ namespace cycfi { namespace elements
 
    void window::size(point const& p)
    {
-      auto scale = GetDpiForWindow(_window) / 96.0;
+      auto scale = GetDpiForWindow(as_handle(_window)) / 96.0;
       RECT frame;
-      GetWindowRect(_window, &frame);
+      GetWindowRect(as_handle(_window), &frame);
       frame.right = frame.left + (p.x * scale);
       frame.bottom = frame.top + (p.y * scale);
       constrain_size(
-         _window, frame, get_window_info(_window)->limits);
+         as_handle(_window), frame, get_window_info(_window)->limits);
 
       MoveWindow(
-         _window, frame.left, frame.top,
+         as_handle(_window), frame.left, frame.top,
          frame.right - frame.left,
          frame.bottom - frame.top,
          true // repaint
@@ -225,12 +233,12 @@ namespace cycfi { namespace elements
    {
       get_window_info(_window)->limits = limits_;
       RECT frame;
-      GetWindowRect(_window, &frame);
+      GetWindowRect(as_handle(_window), &frame);
       constrain_size(
-         _window, frame, get_window_info(_window)->limits);
+         as_handle(_window), frame, get_window_info(_window)->limits);
 
       MoveWindow(
-         _window, frame.left, frame.top,
+         as_handle(_window), frame.left, frame.top,
          frame.right - frame.left,
          frame.bottom - frame.top,
          true // repaint
@@ -239,20 +247,20 @@ namespace cycfi { namespace elements
 
    point window::position() const
    {
-      auto scale = GetDpiForWindow(_window) / 96.0;
+      auto scale = GetDpiForWindow(as_handle(_window)) / 96.0;
       RECT frame;
-      GetWindowRect(_window, &frame);
+      GetWindowRect(as_handle(_window), &frame);
       return { float(frame.left / scale), float(frame.top / scale) };
    }
 
    void window::position(point const& p)
    {
-      auto scale = GetDpiForWindow(_window) / 96.0;
+      auto scale = GetDpiForWindow(as_handle(_window)) / 96.0;
       RECT frame;
-      GetWindowRect(_window, &frame);
+      GetWindowRect(as_handle(_window), &frame);
 
       MoveWindow(
-         _window, p.x * scale, p.y * scale,
+         as_handle(_window), p.x * scale, p.y * scale,
          frame.right - frame.left,
          frame.bottom - frame.top,
          true // repaint

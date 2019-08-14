@@ -9,14 +9,6 @@
 #include <string>
 #include <functional>
 
-#if defined(_WIN32)
-# include <Windows.h>
-#endif
-
-#if defined(__linux__)
-# include <gtk/gtk.h>
-#endif
-
 #include <infra/support.hpp>
 #include <elements/support/rect.hpp>
 #include <elements/base_view.hpp>

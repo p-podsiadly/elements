@@ -28,6 +28,7 @@
 
 =============================================================================*/
 #include <elements/base_view.hpp>
+#include <Windows.h>
 
 namespace cycfi { namespace elements
 {

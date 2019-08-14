@@ -26,7 +26,7 @@
    3. This notice may not be removed or altered from any source
       distribution.
 =============================================================================*/
-#include <elements/base_view.hpp>
+#include "host_types.hpp"
 #include <elements/support/canvas.hpp>
 #include <elements/support/resource_paths.hpp>
 #include <cairo.h>
@@ -89,6 +89,11 @@ namespace cycfi { namespace elements
       {
          auto param = GetWindowLongPtrW(hwnd, GWLP_USERDATA);
          return reinterpret_cast<view_info*>(param);
+      }
+
+      view_info* get_view_info(host_view view)
+      {
+         return get_view_info(as_handle(view));
       }
 
       void make_offscreen_dc(HDC hdc, view_info* info, int w, int h)
@@ -491,33 +496,39 @@ namespace cycfi { namespace elements
       };
    }
 
+   base_view::base_view(host_view h)
+      : base_view(as_host_window(as_handle(h)))
+   {}
+
    base_view::base_view(host_window h)
    {
       static init_view_class init;
 
-      _view = CreateWindowW(
-         L"ElementsView",
-         nullptr,
-         WS_CHILD | WS_VISIBLE,
-         0, 0, 0, 0,
-         h, nullptr, nullptr,
-         nullptr
+      _view = as_host_view(
+         CreateWindowW(
+            L"ElementsView",
+            nullptr,
+            WS_CHILD | WS_VISIBLE,
+            0, 0, 0, 0,
+            as_handle(h), nullptr, nullptr,
+            nullptr
+         )
       );
 
       RECT bounds;
-      GetClientRect(h, &bounds);
+      GetClientRect(as_handle(h), &bounds);
 
       MoveWindow(
-         _view, bounds.left, bounds.top,
+         as_handle(_view), bounds.left, bounds.top,
          bounds.right-bounds.left, bounds.bottom-bounds.top,
          true // repaint
       );
 
       view_info* info = new view_info{ this };
-      SetWindowLongPtrW(_view, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(info));
+      SetWindowLongPtrW(as_handle(_view), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(info));
 
       // Create 16ms (60Hz) timer
-      SetTimer(_view, IDT_TIMER1, 16, (TIMERPROC) nullptr);
+      SetTimer(as_handle(_view), IDT_TIMER1, 16, (TIMERPROC) nullptr);
    }
 
    base_view::~base_view()
@@ -530,37 +541,37 @@ namespace cycfi { namespace elements
       if (info->offscreen_hdc)
          DeleteDC(info->offscreen_hdc);
 
-      KillTimer(_view, IDT_TIMER1);
+      KillTimer(as_handle(_view), IDT_TIMER1);
       delete info;
-      DeleteObject(_view);
+      DeleteObject(as_handle(_view));
    }
 
    point base_view::cursor_pos() const
    {
       POINT pos;
       GetCursorPos(&pos);
-      ScreenToClient(_view, &pos);
-      float scale = GetDpiForWindow(_view) / 96.0;
+      ScreenToClient(as_handle(_view), &pos);
+      float scale = GetDpiForWindow(as_handle(_view)) / 96.0;
       return { float(pos.x) / scale, float(pos.y) / scale };
    }
 
    elements::size base_view::size() const
    {
-      float scale = GetDpiForWindow(_view) / 96.0;
+      float scale = GetDpiForWindow(as_handle(_view)) / 96.0;
       RECT r;
-      GetWindowRect(_view, &r);
+      GetWindowRect(as_handle(_view), &r);
       return { float(r.right-r.left) / scale, float(r.bottom-r.top) / scale };
    }
 
    void base_view::size(elements::size p)
    {
-      auto scale = GetDpiForWindow(_view) / 96.0;
-      auto parent = GetParent(_view);
+      auto scale = GetDpiForWindow(as_handle(_view)) / 96.0;
+      auto parent = GetParent(as_handle(_view));
       RECT bounds;
       GetClientRect(parent, &bounds);
 
       MoveWindow(
-         _view, bounds.left, bounds.top,
+         as_handle(_view), bounds.left, bounds.top,
          p.x * scale, p.y * scale,
          true // repaint
       );
@@ -569,19 +580,19 @@ namespace cycfi { namespace elements
    void base_view::refresh()
    {
       RECT bounds;
-      GetClientRect(_view, &bounds);
-      InvalidateRect(_view, &bounds, false);
+      GetClientRect(as_handle(_view), &bounds);
+      InvalidateRect(as_handle(_view), &bounds, false);
    }
 
    void base_view::refresh(rect area)
    {
-      auto scale = GetDpiForWindow(_view) / 96.0;
+      auto scale = GetDpiForWindow(as_handle(_view)) / 96.0;
       RECT r;
       r.left = area.left * scale;
       r.right = area.right * scale;
       r.top = area.top * scale;
       r.bottom = area.bottom * scale;
-      InvalidateRect(_view, &r, false);
+      InvalidateRect(as_handle(_view), &r, false);
    }
 
    std::string clipboard()

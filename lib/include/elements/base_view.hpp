@@ -17,10 +17,6 @@
 #include <elements/support/point.hpp>
 #include <elements/support/rect.hpp>
 
-#if defined(_WIN32)
-# include <windows.h>
-#endif
-
 namespace cycfi { namespace elements
 {
    ////////////////////////////////////////////////////////////////////////////
@@ -282,31 +278,16 @@ namespace cycfi { namespace elements
    // The base view base class
    ////////////////////////////////////////////////////////////////////////////
 
-#if defined(__APPLE__)
    struct _host_view;
    using host_view = _host_view*;
-#elif defined(_WIN32)
-   using host_view = HWND;
-#elif defined(__linux__)
-   using host_view = GtkWidget*;
-#endif
 
-#if defined(__APPLE__)
    struct _host_window;
    using host_window = _host_window*;
-#elif defined(_WIN32)
-   using host_window = HWND;
-#elif defined(__linux__)
-   using host_window = GtkWidget*;
-#endif
-
+   
    class base_view : non_copyable
    {
    public:
-
-#if !defined(_WIN32)
                         base_view(host_view h);
-#endif
                         base_view(host_window h);
       virtual           ~base_view();
 
