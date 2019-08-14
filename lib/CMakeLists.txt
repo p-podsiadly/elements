@@ -85,7 +85,8 @@ find_package(
 
 include_directories(${Boost_INCLUDE_DIRS})
 
-add_definitions("-DBOOST_ALL_NO_LIB") # disable auto-linking
+# disable auto-linking, silence std::allocator<void>-related warnings in boost_asio
+add_definitions("-DBOOST_ALL_NO_LIB" "-D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING")
 
 set(BOOST_CMAKE_ARGS)
 if (DEFINED BOOST_ROOT)

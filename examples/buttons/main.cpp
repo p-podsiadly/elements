@@ -37,10 +37,10 @@ auto make_popup_menu(char const* title, menu_position pos)
    return popup;
 }
 
-constexpr auto bred     = colors::red.opacity(0.4);
-constexpr auto bgreen   = colors::green.level(0.7).opacity(0.4);
-constexpr auto bblue    = colors::blue.opacity(0.4);
-constexpr auto brblue   = colors::royal_blue.opacity(0.4);
+constexpr auto bred     = colors::red.opacity(0.4f);
+constexpr auto bgreen   = colors::green.level(0.7f).opacity(0.4f);
+constexpr auto bblue    = colors::blue.opacity(0.4f);
+constexpr auto brblue   = colors::royal_blue.opacity(0.4f);
 
 auto make_buttons(view& view_)
 {
@@ -102,10 +102,10 @@ auto make_more_buttons()
                vtile(
                   top_margin(35,
                      htile(
-                        align_center(toggle_icon_button(icons::power, 1.2, indicator_color)),
-                        align_center(icon_button(icons::magnifying_glass, 1.2)),
-                        align_center(icon_button(icons::left_circled, 1.2)),
-                        align_center(toggle_icon_button(icons::left, icons::right, 1.2))
+                        align_center(toggle_icon_button(icons::power, 1.2f, indicator_color)),
+                        align_center(icon_button(icons::magnifying_glass, 1.2f)),
+                        align_center(icon_button(icons::left_circled, 1.2f)),
+                        align_center(toggle_icon_button(icons::left, icons::right, 1.2f))
                      )
                   )
                )

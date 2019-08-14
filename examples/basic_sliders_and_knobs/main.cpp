@@ -24,7 +24,7 @@ auto make_markers()
    auto track = basic_track<5, is_vertical>();
    return slider_labels<10>(
       slider_marks<40>(track),         // Track with marks
-      0.8,                             // Label font size (relative size)
+      0.8f,                            // Label font size (relative size)
       "0", "1", "2", "3", "4",         // Labels
       "5", "6", "7", "8", "9", "10"
    );
@@ -83,7 +83,7 @@ auto make_dial(int index)
 
    auto markers = radial_labels<15>(
       hold(dials[index]),
-      0.7,                                   // Label font size (relative size)
+      0.7f,                                  // Label font size (relative size)
       "0", "1", "2", "3", "4",               // Labels
       "5", "6", "7", "8", "9", "10"
    );

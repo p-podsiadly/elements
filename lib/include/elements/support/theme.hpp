@@ -43,19 +43,19 @@ namespace cycfi { namespace elements
       float                text_box_font_size         = 14.0;
       color                text_box_hilite_color      = rgba(0, 127, 255, 100);
       color                text_box_caret_color       = rgba(0, 190, 255, 255);
-      float                text_box_caret_width       = 1.2;
+      float                text_box_caret_width       = 1.2f;
       color                inactive_font_color        = rgba(127, 127, 127, 150);
 
       color                ticks_color                = rgba(127, 127, 127, 150);
       float                major_ticks_level          = 0.5;
       float                major_ticks_width          = 1.5;
-      float                minor_ticks_level          = 0.4;
-      float                minor_ticks_width          = 0.7;
+      float                minor_ticks_level          = 0.4f;
+      float                minor_ticks_width          = 0.7f;
 
       color                major_grid_color           = frame_color;
       float                major_grid_width           = 0.5;
       color                minor_grid_color           = indicator_color;
-      float                minor_grid_width           = 0.4;
+      float                minor_grid_width           = 0.4f;
 
       size                 message_box_size           = { 400, 180 };
    };

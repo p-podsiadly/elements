@@ -18,7 +18,7 @@ auto box = basic(
 
       c.begin_path();
       c.round_rect(ctx.bounds, 4);
-      c.fill_style(colors::gold.opacity(0.8));
+      c.fill_style(colors::gold.opacity(0.8f));
       c.fill();
    }
 );
@@ -62,7 +62,7 @@ auto make_basic_text()
       return fr(halign(0.5, heading{ txt }), 0);
    };
 
-   auto el = [=](double align, char const* txt)
+   auto el = [=](float align, char const* txt)
    {
       return fr(halign(align, label{ txt }));
    };

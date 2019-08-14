@@ -119,7 +119,8 @@ namespace cycfi { namespace elements
    {
       double x1, y1, x2, y2;
       cairo_fill_extents(&_context, &x1, &y1, &x2, &y2);
-      return elements::rect(x1, y1, x2, y2);
+      return { float(x1), float(y1), float(x2), float(y2)
+   };
    }
 
    inline void canvas::move_to(point p)
@@ -172,7 +173,7 @@ namespace cycfi { namespace elements
 
    inline void canvas::circle(struct circle c)
    {
-      arc(point{ c.cx, c.cy }, c.radius, 0.0, 2 * M_PI);
+      arc(point{ c.cx, c.cy }, c.radius, 0.0, float(2 * M_PI));
    }
 
    inline void canvas::fill_style(color c)
@@ -314,10 +315,10 @@ namespace cycfi { namespace elements
          switch (align & 0x3)
          {
             case canvas::text_alignment::right:
-               p.x -= extents.width;
+               p.x -= float(extents.width);
                break;
             case canvas::text_alignment::center:
-               p.x -= extents.width/2;
+               p.x -= float(extents.width / 2);
                break;
             default:
                break;
@@ -326,15 +327,15 @@ namespace cycfi { namespace elements
          switch (align & 0x1C)
          {
             case canvas::text_alignment::top:
-               p.y += font_extents.ascent;
+               p.y += float(font_extents.ascent);
                break;
 
             case canvas::text_alignment::middle:
-               p.y += font_extents.ascent/2 - font_extents.descent/2;
+               p.y += float(font_extents.ascent / 2 - font_extents.descent / 2);
                break;
 
             case canvas::text_alignment::bottom:
-               p.y -= font_extents.descent;
+               p.y -= float(font_extents.descent);
                break;
 
             default:

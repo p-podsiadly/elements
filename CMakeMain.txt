@@ -90,6 +90,9 @@ if (WIN32)
       "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup shcore.lib"
    )
 
+   # silence std::allocator<void>-related warnings in boost_asio
+   add_definitions("-D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING")
+
    add_executable(
       ${ELEMENTS_APP_PROJECT}
       WIN32
